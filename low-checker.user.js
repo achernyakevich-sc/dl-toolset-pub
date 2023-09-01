@@ -73,7 +73,7 @@
         }
     }
 
-    GM_registerMenuCommand("Check briefs", window.Validator.extractAndValidate, 'KeyC');
+    GM_registerMenuCommand("Check briefs", window.Validator.extractAndValidate, 'c');
 })();
 
 
