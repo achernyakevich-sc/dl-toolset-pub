@@ -10,7 +10,7 @@
 // ==/UserScript==
 
 (function() {
-  'use strict';
+    'use strict';
     const TEXTAREA_ID = "text";
     const VALIDATORS = {
         beginsWithValidator: function (brief) {
@@ -39,7 +39,7 @@
         }
     }
 
-   const validate = (text) => {
+    const validate = (text) => {
         var lines = text.split('\n');
         lines.forEach((line, index) => {
             if (line.replace(/^\s*$(?:\r\n?|\n)/gm, "").length > 0) {
@@ -53,21 +53,21 @@
         })
     }
 
-   document.addEventListener('keydown', function(event) {
-            //GM_log("Ctrl: " + event.ctrlKey +"; Shift: " + event.shiftKey + "; Key: " + event.key + "; Code: " + event.code);
+    document.addEventListener('keydown', function(event) {
+        //GM_log("Ctrl: " + event.ctrlKey +"; Shift: " + event.shiftKey + "; Key: " + event.key + "; Code: " + event.code);
 
-            // Ctrl+Shift+? -> Toggle Search Panel (if available)
-            // Ctrl+Shift+/ -> Toggle Full Screen mode
-            if ( event.altKey && event.shiftKey && event.code == 'KeyC') {
-                window.Validator.extractAndValidate();
-                event.stopPropagation();
-                event.preventDefault();
-            }
+        // Ctrl+Shift+? -> Toggle Search Panel (if available)
+        // Ctrl+Shift+/ -> Toggle Full Screen mode
+        if ( event.altKey && event.shiftKey && event.code == 'KeyC') {
+            window.Validator.extractAndValidate();
+            event.stopPropagation();
+            event.preventDefault();
+        }
 
-        }, true);
+    }, true);
     GM_log("Shortcuts aassigned");
 
-   window.Validator = {
+    window.Validator = {
         extractAndValidate: function () {
             validate(document.getElementById(TEXTAREA_ID).value);
         }
