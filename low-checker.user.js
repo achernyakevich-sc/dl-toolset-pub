@@ -6,11 +6,11 @@
 // @author       bosak@scand.com
 // @match        http://localhost:8080/
 // @grant        GM_log
+// @grant        GM_registerMenuCommand
 // ==/UserScript==
 
-(function () {
-    'use strict';
-
+(function() {
+  'use strict';
     const TEXTAREA_ID = "text";
     const VALIDATORS = {
         beginsWithValidator: function (brief) {
@@ -39,7 +39,7 @@
         }
     }
 
-    const validate = (text) => {
+   const validate = (text) => {
         var lines = text.split('\n');
         lines.forEach((line, index) => {
             if (line.replace(/^\s*$(?:\r\n?|\n)/gm, "").length > 0) {
@@ -53,21 +53,27 @@
         })
     }
 
-    window.Validator = {
+   document.addEventListener('keydown', function(event) {
+            //GM_log("Ctrl: " + event.ctrlKey +"; Shift: " + event.shiftKey + "; Key: " + event.key + "; Code: " + event.code);
+
+            // Ctrl+Shift+? -> Toggle Search Panel (if available)
+            // Ctrl+Shift+/ -> Toggle Full Screen mode
+            if ( event.altKey && event.shiftKey && event.code == 'KeyC') {
+                window.Validator.extractAndValidate();
+                event.stopPropagation();
+                event.preventDefault();
+            }
+
+        }, true);
+    GM_log("Shortcuts aassigned");
+
+   window.Validator = {
         extractAndValidate: function () {
             validate(document.getElementById(TEXTAREA_ID).value);
-        },
-        addButtons: function () {
-            const root = document.getElementById("root");
-            var checkButton = document.createElement("button");
-            checkButton.innerHTML = 'Validate';
-            checkButton.onclick = window.Validator.extractAndValidate;
-            root.appendChild(checkButton);
-        },
-        init: function () {
-            this.addButtons();
         }
     }
 
-    window.Validator.init();
+    GM_registerMenuCommand("Check briefs", window.Validator.extractAndValidate, 'c');
 })();
+
+
