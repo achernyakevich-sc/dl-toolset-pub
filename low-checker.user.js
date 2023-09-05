@@ -1,37 +1,35 @@
 // ==UserScript==
 // @name         LoW-Checker
 // @version      0.1
-// @description  List of Work (LoF) Checker
+// @description  List of Work (LoW) Checker
 // @author       calina@scand.com
 // @author       bosak@scand.com
-// @match        http://localhost:8080/
+// @match        http://localhost:8080/*
 // @grant        GM_log
 // @grant        GM_registerMenuCommand
 // ==/UserScript==
 
 (function() {
     'use strict';
+
     const TEXTAREA_ID = "text";
     const VALIDATORS = {
-        beginsWithValidator: function (brief) {
-            return brief.startsWith("- ");
-        },
-        endsWithValidator: function (brief) {
-            return brief.endsWith(".");
-        },
-        intoductionValidator: function (brief) {
-            let introductions = ["Development of functionality", "Разработка функциональности"];
+        intoductionValidator: function (line) {
+            let introductions = ["- Development of functionality", "- Разработка функциональности"];
             for (let i = 0; i < introductions.length; i++) {
-                if (brief.slice(2).startsWith(introductions[i])) {
+                if (line.startsWith(introductions[i])) {
                     return true;
                 }
             }
             return false;
         },
-        blackListValidator: function (brief) {
+        endsWithValidator: function (line) {
+            return line.endsWith(".");
+        },
+        blackListValidator: function (line) {
             let dictionary = ["fuck"];
             for (let i = 0; i < dictionary.length; i++) {
-                if (brief.includes(dictionary[i])) {
+                if (line.includes(dictionary[i])) {
                     return false;
                 }
             }
@@ -56,14 +54,11 @@
     document.addEventListener('keydown', function(event) {
         //GM_log("Ctrl: " + event.ctrlKey +"; Shift: " + event.shiftKey + "; Key: " + event.key + "; Code: " + event.code);
 
-        // Ctrl+Shift+? -> Toggle Search Panel (if available)
-        // Ctrl+Shift+/ -> Toggle Full Screen mode
         if ( event.altKey && event.shiftKey && event.code == 'KeyC') {
             window.Validator.extractAndValidate();
             event.stopPropagation();
             event.preventDefault();
         }
-
     }, true);
     GM_log("Shortcuts aassigned");
 
@@ -73,7 +68,5 @@
         }
     }
 
-    GM_registerMenuCommand("Check briefs", window.Validator.extractAndValidate, 'c');
+    GM_registerMenuCommand("Check List of Works", window.Validator.extractAndValidate, 'c');
 })();
-
-
