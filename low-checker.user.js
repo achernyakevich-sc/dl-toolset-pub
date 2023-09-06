@@ -12,13 +12,6 @@
 (function() {
     'use strict';
 
-    const CONFIGURATION = [
-        {
-            prefixUrl: "http://localhost:8080/",
-            targetElementId: "text"
-        },
-    ];
-
     const VALIDATORS = {
         intoductionValidator: function (line) {
             let introductions = ["- Development of functionality", "- Разработка функциональности"];
@@ -57,11 +50,14 @@
         })
     }
 
-    let currentConfig;
+    const CONFIGURATION = [
+        {
+            prefixUrl: "http://localhost:8080/",
+            targetElementId: "text"
+        },
+    ];
 
-    const seachForPrefix = () => {
-        currentConfig = CONFIGURATION.find((el) => el.prefixUrl === window.location.href);
-    };
+    const config = CONFIGURATION.find((el) => el.prefixUrl === window.location.href);
 
     document.addEventListener('keydown', function(event) {
         //GM_log("Ctrl: " + event.ctrlKey +"; Shift: " + event.shiftKey + "; Key: " + event.key + "; Code: " + event.code);
@@ -76,10 +72,9 @@
 
     window.validator = {
         extractAndValidate: function () {
-            validate(document.getElementById(currentConfig.targetElementId).value);
+            validate(document.getElementById(config.targetElementId).value);
         }
     }
 
     GM_registerMenuCommand("Check List of Works", window.validator.extractAndValidate, 'c');
-    seachForPrefix();
 })();
