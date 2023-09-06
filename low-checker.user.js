@@ -12,7 +12,13 @@
 (function() {
     'use strict';
 
-    const TEXTAREA_ID = "text";
+    const CONFIGURATION = [
+        {
+            prefixUrl: "http://localhost:8080/",
+            targetElementId: "text"
+        },
+    ];
+
     const VALIDATORS = {
         intoductionValidator: function (line) {
             let introductions = ["- Development of functionality", "- Разработка функциональности"];
@@ -51,22 +57,29 @@
         })
     }
 
+    let currentPrefixUrl;
+
+    function seachingForPrefix() {
+        currentPrefixUrl = CONFIGURATION.find((el) => el.prefixUrl === window.location.href);
+    };
+
     document.addEventListener('keydown', function(event) {
         //GM_log("Ctrl: " + event.ctrlKey +"; Shift: " + event.shiftKey + "; Key: " + event.key + "; Code: " + event.code);
 
         if ( event.altKey && event.shiftKey && event.code == 'KeyC') {
-            window.Validator.extractAndValidate();
+            window.validator.extractAndValidate();
             event.stopPropagation();
             event.preventDefault();
         }
     }, true);
     GM_log("Shortcuts aassigned");
 
-    window.Validator = {
+    window.validator = {
         extractAndValidate: function () {
-            validate(document.getElementById(TEXTAREA_ID).value);
+            validate(document.getElementById(currentPrefixUrl.targetElementId).value);
         }
     }
 
-    GM_registerMenuCommand("Check List of Works", window.Validator.extractAndValidate, 'c');
+    GM_registerMenuCommand("Check List of Works", window.validator.extractAndValidate, 'c');
+    seachingForPrefix();
 })();
