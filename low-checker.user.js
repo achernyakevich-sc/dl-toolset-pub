@@ -57,10 +57,10 @@
         })
     }
 
-    let currentPrefixUrl;
+    let currentConfig;
 
-    function seachingForPrefix() {
-        currentPrefixUrl = CONFIGURATION.find((el) => el.prefixUrl === window.location.href);
+    const seachForPrefix = () => {
+        currentConfig = CONFIGURATION.find((el) => el.prefixUrl === window.location.href);
     };
 
     document.addEventListener('keydown', function(event) {
@@ -76,10 +76,10 @@
 
     window.validator = {
         extractAndValidate: function () {
-            validate(document.getElementById(currentPrefixUrl.targetElementId).value);
+            validate(document.getElementById(currentConfig.targetElementId).value);
         }
     }
 
     GM_registerMenuCommand("Check List of Works", window.validator.extractAndValidate, 'c');
-    seachingForPrefix();
+    seachForPrefix();
 })();
