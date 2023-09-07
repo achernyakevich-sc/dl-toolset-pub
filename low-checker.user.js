@@ -50,31 +50,29 @@
         })
     }
 
-    const CONFIGURATION = [
+    const CONFIGURATIONS = [
         {
             prefixUrl: "http://localhost:8080/",
             targetElementId: "text"
         },
     ];
 
-    const config = CONFIGURATION.find((el) => el.prefixUrl === window.location.href);
+    const config = CONFIGURATIONS.find((el) => el.prefixUrl === window.location.href);
+
+    const extractAndValidate = () => {
+        validate(document.getElementById(config.targetElementId).value);
+    }
 
     document.addEventListener('keydown', function(event) {
         //GM_log("Ctrl: " + event.ctrlKey +"; Shift: " + event.shiftKey + "; Key: " + event.key + "; Code: " + event.code);
 
         if ( event.altKey && event.shiftKey && event.code == 'KeyC') {
-            window.validator.extractAndValidate();
+            extractAndValidate();
             event.stopPropagation();
             event.preventDefault();
         }
     }, true);
+
     GM_log("Shortcuts aassigned");
-
-    window.validator = {
-        extractAndValidate: function () {
-            validate(document.getElementById(config.targetElementId).value);
-        }
-    }
-
-    GM_registerMenuCommand("Check List of Works", window.validator.extractAndValidate, 'c');
+    GM_registerMenuCommand("Check List of Works", extractAndValidate, 'c');
 })();
