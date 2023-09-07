@@ -74,5 +74,6 @@
     }, true);
 
     GM_log("Shortcuts aassigned");
+    
     GM_registerMenuCommand("Check List of Works", extractAndValidate, 'c');
 })();
