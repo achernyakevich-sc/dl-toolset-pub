@@ -52,15 +52,18 @@
 
     const CONFIGURATIONS = [
         {
-            prefixUrl: "http://localhost:8080/",
+            urlPattern: "http:\\/\\/localhost:",
             targetElementId: "text"
         }
     ];
 
-    const config = CONFIGURATIONS.find((el) => el.prefixUrl === window.location.href);
+    const config = CONFIGURATIONS.find((el) => new RegExp(el.urlPattern).test(window.location.href));
 
     const extractAndValidate = () => {
-        validate(document.getElementById(config.targetElementId).value);
+        if (config !== undefined) {validate(document.getElementById(config.targetElementId).value);}
+        else {
+            alert ("No configuration for that site");
+        }
     }
 
     document.addEventListener('keydown', function(event) {
@@ -74,6 +77,6 @@
     }, true);
 
     GM_log("Shortcuts aassigned");
-    
+
     GM_registerMenuCommand("Check List of Works", extractAndValidate, 'c');
 })();
