@@ -5,6 +5,7 @@
 // @author       calina@scand.com
 // @author       bosak@scand.com
 // @match        http://localhost:8080/*
+// @match        https://*.phoebius.com/issues/*
 // @grant        GM_log
 // @grant        GM_registerMenuCommand
 // ==/UserScript==
@@ -54,6 +55,10 @@
         {
             prefixUrl: "http://localhost:8080/",
             targetElementId: "text"
+        },
+        {
+            prefixUrl: "https://reports.phoebius.com/issues/",
+            targetElementId: "issue_description"
         }
     ];
 
