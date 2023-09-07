@@ -54,7 +54,7 @@
         {
             prefixUrl: "http://localhost:8080/",
             targetElementId: "text"
-        },
+        }
     ];
 
     const config = CONFIGURATIONS.find((el) => el.prefixUrl === window.location.href);
