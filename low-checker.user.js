@@ -84,5 +84,4 @@
     } else {
         GM_log("LoW Checker: Configuration not found.");
     }
-
 })();
