@@ -78,8 +78,7 @@
             GM_log("Shortcuts assigned");
 
             GM_registerMenuCommand("Check List of Works", extractAndValidate, 'c');
-        }
-        else GM_log("LoW Checker: Configuration not found.");
+        } else GM_log("LoW Checker: Configuration not found.");
     }
 
     initValidation(config);
