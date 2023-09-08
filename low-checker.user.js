@@ -50,38 +50,39 @@
         })
     }
 
+    const extractAndValidate = () => {
+        validate(document.getElementById(config.targetElementId).value);
+    }
+
     const CONFIGURATIONS = [
         {
             urlPattern: "http:\\/\\/localhost:",
             targetElementId: "text"
+        },
+        {
+            urlPattern: "^https:\\/\\/.+\\.phoebius.com\\/issues\\/\\d+",
+            targetElementId: "issue_description"
         }
     ];
 
     const config = CONFIGURATIONS.find((el) => new RegExp(el.urlPattern).test(window.location.href));
 
-    const extractAndValidate = () => {
-        validate(document.getElementById(config.targetElementId).value);
+    if (config) {
+        document.addEventListener('keydown', function(event) {
+            //GM_log("Ctrl: " + event.ctrlKey +"; Shift: " + event.shiftKey + "; Key: " + event.key + "; Code: " + event.code);
+
+            if ( event.altKey && event.shiftKey && event.code == 'KeyC') {
+                extractAndValidate();
+                event.stopPropagation();
+                event.preventDefault();
+            }
+        }, true);
+
+        GM_log("Shortcuts assigned");
+
+        GM_registerMenuCommand("Check List of Works", extractAndValidate, 'c');
+    } else {
+        GM_log("LoW Checker: Configuration not found.");
     }
 
-    const initValidation = (config) => {
-        if (Boolean(config)) {
-            document.addEventListener('keydown', function(event) {
-                //GM_log("Ctrl: " + event.ctrlKey +"; Shift: " + event.shiftKey + "; Key: " + event.key + "; Code: " + event.code);
-
-                if ( event.altKey && event.shiftKey && event.code == 'KeyC') {
-                    extractAndValidate();
-                    event.stopPropagation();
-                    event.preventDefault();
-                }
-            }, true);
-
-            GM_log("Shortcuts assigned");
-
-            GM_registerMenuCommand("Check List of Works", extractAndValidate, 'c');
-        }
-        else GM_log("LoW Checker: Configuration not found.");
-    }
-
-    initValidation(config);
-    })();
-    
+})();
