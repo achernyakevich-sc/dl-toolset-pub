@@ -64,7 +64,7 @@
     }
 
     const initValidation = (config) => {
-        if (Boolean(config)) {
+        if (config) {
             document.addEventListener('keydown', function(event) {
                 //GM_log("Ctrl: " + event.ctrlKey +"; Shift: " + event.shiftKey + "; Key: " + event.key + "; Code: " + event.code);
 
