@@ -60,7 +60,9 @@
     const config = CONFIGURATIONS.find((el) => new RegExp(el.urlPattern).test(window.location.href));
 
     const extractAndValidate = () => {
-        if (config !== undefined) {validate(document.getElementById(config.targetElementId).value);}
+        if (config !== undefined) {
+            validate(document.getElementById(config.targetElementId).value);
+        }
         else {
             alert ("No configuration for that site");
         }
@@ -76,7 +78,7 @@
         }
     }, true);
 
-    GM_log("Shortcuts aassigned");
+    GM_log("Shortcuts assigned");
 
     GM_registerMenuCommand("Check List of Works", extractAndValidate, 'c');
 })();
