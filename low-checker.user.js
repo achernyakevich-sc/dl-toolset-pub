@@ -60,25 +60,28 @@
     const config = CONFIGURATIONS.find((el) => new RegExp(el.urlPattern).test(window.location.href));
 
     const extractAndValidate = () => {
-        if (config !== undefined) {
-            validate(document.getElementById(config.targetElementId).value);
-        }
-        else {
-            alert ("No configuration for that site");
-        }
+        validate(document.getElementById(config.targetElementId).value);
     }
 
-    document.addEventListener('keydown', function(event) {
-        //GM_log("Ctrl: " + event.ctrlKey +"; Shift: " + event.shiftKey + "; Key: " + event.key + "; Code: " + event.code);
+    const initValidation = (config) => {
+        if (Boolean(config)) {
+            document.addEventListener('keydown', function(event) {
+                //GM_log("Ctrl: " + event.ctrlKey +"; Shift: " + event.shiftKey + "; Key: " + event.key + "; Code: " + event.code);
 
-        if ( event.altKey && event.shiftKey && event.code == 'KeyC') {
-            extractAndValidate();
-            event.stopPropagation();
-            event.preventDefault();
+                if ( event.altKey && event.shiftKey && event.code == 'KeyC') {
+                    extractAndValidate();
+                    event.stopPropagation();
+                    event.preventDefault();
+                }
+            }, true);
+
+            GM_log("Shortcuts assigned");
+
+            GM_registerMenuCommand("Check List of Works", extractAndValidate, 'c');
         }
-    }, true);
+        else GM_log("LoW Checker: Configuration not found.");
+    }
 
-    GM_log("Shortcuts assigned");
-
-    GM_registerMenuCommand("Check List of Works", extractAndValidate, 'c');
-})();
+    initValidation(config);
+    })();
+    
