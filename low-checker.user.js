@@ -14,8 +14,8 @@
     'use strict';
 
     const VALIDATORS = {
-        intoductionValidator: function (line) {
-            let introductions = ["- Development of functionality", "- Разработка функциональности"];
+        introductionValidator: function (line) {
+            let introductions = ["- Development of the functionality ", "- Разработка функциональности "];
             for (let i = 0; i < introductions.length; i++) {
                 if (line.startsWith(introductions[i])) {
                     return true;
