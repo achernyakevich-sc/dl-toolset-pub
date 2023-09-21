@@ -7,12 +7,7 @@
 // @match        http://localhost:8080/*
 // @match        https://*.phoebius.com/issues/*
 // @grant        GM_log
-// @grant        GM_setValue
-// @grant        GM_getValue
-// @grant        GM_deleteValue
 // @grant        GM_registerMenuCommand
-// @grant        GM_listValues
-// @require      https://bitbucket.org/achernyakevich/tampermonkey-scripts/raw/configHelper-0.1.1/common/configHelper.js
 // ==/UserScript==
 
 (function() {
@@ -56,50 +51,44 @@
         })
     }
 
-    const extractAndValidate = (config) => () => {
+    const extractAndValidate = () => {
         validate(document.getElementById(config.targetElementId).value);
     }
 
-    const CONFIGURATIONS = [
-        {
-            urlPattern: "http:\\/\\/localhost:",
-            targetElementId: "text"
-        },
-        {
-            urlPattern: "^https:\\/\\/.+\\.phoebius.com\\/issues\\/\\d+",
-            targetElementId: "issue_description"
-        }
-    ];
+    const CONFIG_NAMESPACE = "low-checker";
+    const DEFAULT_CONFIG = JSON.stringify({
+        targetElementMatchers: [
+            {
+                urlPattern: "http:\\/\\/localhost:",
+                targetElementId: "text"
+            },
+            {
+                urlPattern: "^https:\\/\\/.+\\.phoebius.com\\/issues\\/\\d+",
+                targetElementId: "issue_description"
+            }
+        ],
+        blackListValidatorDictionary: []
+    });
 
-    const CONFIGURATION_NAME = "listOfWork.config";
+    const config = CONFIGURATIONS.find((el) => new RegExp(el.urlPattern).test(window.location.href));
 
-    const initConfiguration = () => {
-        if (!GM_getValue(CONFIGURATION_NAME)) {
-            GM_setValue(CONFIGURATION_NAME, JSON.stringify(CONFIGURATIONS));
-        }
-        let userConfig = GM_getValue(CONFIGURATION_NAME);
-        let configurations = configHelper.getConfigObject(userConfig);
-        let workingConfig = configurations.find((el) => new RegExp(el.urlPattern).test(window.location.href));
-        if (workingConfig) {
-            document.addEventListener('keydown', function(event) {
-                //GM_log("Ctrl: " + event.ctrlKey +"; Shift: " + event.shiftKey + "; Key: " + event.key + "; Code: " + event.code);
+    if (config) {
+        document.addEventListener('keydown', function(event) {
+            //GM_log("Ctrl: " + event.ctrlKey +"; Shift: " + event.shiftKey + "; Key: " + event.key + "; Code: " + event.code);
 
-                if ( event.altKey && event.shiftKey && event.code == 'KeyC') {
-                    extractAndValidate(workingConfig)();
-                    event.stopPropagation();
-                    event.preventDefault();
-                }
-            }, true);
+            if ( event.altKey && event.shiftKey && event.code == 'KeyC') {
+                extractAndValidate();
+                event.stopPropagation();
+                event.preventDefault();
+            }
+        }, true);
 
             GM_log("Shortcuts assigned");
 
-            GM_registerMenuCommand("Check List of Works", extractAndValidate(workingConfig), 'c');
-        } else {
-            GM_log("LoW Checker: Configuration not found.");
-        }
+        GM_registerMenuCommand("Check List of Works", extractAndValidate, 'c');
+    } else {
+        GM_log("LoW Checker: Configuration not found.");
     }
-
-    initConfiguration();
 
     GM_registerMenuCommand("Upload Custom Config", initConfiguration, 'p');
     configHelper.addConfigMenu('listOfWork', '[{"urlPattern" : "http:\\/\\/localhost:", "targetElementId" : "text"}]');
