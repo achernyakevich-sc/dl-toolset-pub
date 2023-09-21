@@ -7,14 +7,19 @@
 // @match        http://localhost:8080/*
 // @match        https://*.phoebius.com/issues/*
 // @grant        GM_log
+// @grant        GM_setValue
+// @grant        GM_getValue
+// @grant        GM_deleteValue
+// @grant        GM_listValues
 // @grant        GM_registerMenuCommand
+// @require      https://bitbucket.org/achernyakevich/tmsp-common/raw/configHelper-0.1.3/configHelper.js
 // ==/UserScript==
 
 (function() {
     'use strict';
 
     const VALIDATORS = {
-        intoductionValidator: function (line) {
+        introductionValidator: function (line) {
             let introductions = ["- Development of the functionality ", "- Разработка функциональности "];
             for (let i = 0; i < introductions.length; i++) {
                 if (line.startsWith(introductions[i])) {
@@ -51,8 +56,8 @@
         })
     }
 
-    const extractAndValidate = () => {
-        validate(document.getElementById(config.targetElementId).value);
+    const extractAndValidate = (targetElementId) => () => {
+        validate(document.getElementById(targetElementId).value);
     }
 
     const CONFIG_NAMESPACE = "low-checker";
@@ -70,26 +75,27 @@
         blackListValidatorDictionary: []
     });
 
-    const config = CONFIGURATIONS.find((el) => new RegExp(el.urlPattern).test(window.location.href));
+    configHelper.addConfigMenu(CONFIG_NAMESPACE, DEFAULT_CONFIG);
+    const config = configHelper.getConfig(CONFIG_NAMESPACE);
+    const matcher = config.targetElementMatchers.find((el) => new RegExp(el.urlPattern).test(window.location.href));
+    const targetElementId = matcher.targetElementId;
 
-    if (config) {
+    if (matcher) {
         document.addEventListener('keydown', function(event) {
             //GM_log("Ctrl: " + event.ctrlKey +"; Shift: " + event.shiftKey + "; Key: " + event.key + "; Code: " + event.code);
 
             if ( event.altKey && event.shiftKey && event.code == 'KeyC') {
-                extractAndValidate();
+                extractAndValidate(targetElementId)();
                 event.stopPropagation();
                 event.preventDefault();
             }
         }, true);
 
-            GM_log("Shortcuts assigned");
+        GM_log("Shortcuts assigned");
 
-        GM_registerMenuCommand("Check List of Works", extractAndValidate, 'c');
+        GM_registerMenuCommand("Check List of Works", extractAndValidate(targetElementId), 'c');
     } else {
         GM_log("LoW Checker: Configuration not found.");
     }
 
-    GM_registerMenuCommand("Upload Custom Config", initConfiguration, 'p');
-    configHelper.addConfigMenu('listOfWork', '[{"urlPattern" : "http:\\/\\/localhost:", "targetElementId" : "text"}]');
 })();
