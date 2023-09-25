@@ -15,7 +15,7 @@
 // @require      https://bitbucket.org/achernyakevich/tmsp-common/raw/configHelper-0.1.3/configHelper.js
 // ==/UserScript==
 
-(function() {
+(function () {
     "use strict";
 
     const CONFIG_NAMESPACE = "low-checker";
@@ -44,7 +44,7 @@
     const targetElementId = matcher.targetElementId;
 
     const VALIDATORS = {
-        introductionValidator: function(line) {
+        introductionValidator: function (line) {
             let introductions = [
                 "- Development of the functionality ",
                 "- Разработка функциональности "
@@ -59,10 +59,10 @@
                 ? ""
                 : "Line doesn't have right introduction.";
         },
-        endsWithValidator: function(line) {
+        endsWithValidator: function (line) {
             return line.endsWith(".") ? "" : "Line doesn't end with dot.";
         },
-        blackListValidator: function(line) {
+        blackListValidator: function (line) {
             let stopWordsFounded = [];
             for (let i = 0; i < stopWordsDictionary.length; i++) {
                 if (line.includes(stopWordsDictionary[i])) {
@@ -75,7 +75,7 @@
         }
     };
 
-    const validate = line => {
+    const validate = (line) => {
         let failedValidationsMessages = [];
         for (let validatorName in VALIDATORS) {
             if (VALIDATORS[validatorName](line)) {
@@ -94,7 +94,7 @@
         return prompt(message, line);
     };
 
-    const checkAndUpdateLoWText = targetElementId => () => {
+    const checkAndUpdateLoWText = (targetElementId) => () => {
         const loWTextArea = document.getElementById(targetElementId);
         const lines = loWTextArea.value.split("\n");
 
@@ -133,7 +133,7 @@
     if (matcher) {
         document.addEventListener(
             "keydown",
-            function(event) {
+            function (event) {
                 // GM_log("Ctrl: " + event.ctrlKey +"; Shift: " + event.shiftKey + "; Key: " + event.key + "; Code: " + event.code);
 
                 if (event.altKey && event.shiftKey && event.code == "KeyC") {
