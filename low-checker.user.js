@@ -1,11 +1,11 @@
 // ==UserScript==
 // @name         LoW-Checker
-// @version      0.1
+// @version      0.3-SNAPSHOT
 // @description  List of Work (LoW) Checker
 // @author       calina@scand.com
 // @author       bosak@scand.com
+// @include      /^https:\/\/.+\.ph.+us\.com\/issues\/\d+/
 // @match        http://localhost:8080/*
-// @match        https://*.phoebius.com/issues/*
 // @grant        GM_log
 // @grant        GM_setValue
 // @grant        GM_getValue
@@ -15,12 +15,39 @@
 // @require      https://bitbucket.org/achernyakevich/tmsp-common/raw/configHelper-0.1.3/configHelper.js
 // ==/UserScript==
 
-(function() {
-    'use strict';
+(function () {
+    "use strict";
+
+    const CONFIG_NAMESPACE = "low-checker";
+    const DEFAULT_CONFIG = JSON.stringify({
+        targetElementMatchers: [
+            {
+                urlPattern: "http:\\/\\/localhost:",
+                targetElementId: "text"
+            },
+            {
+                urlPattern: "^https:\\/\\/.+\\.ph.+us\\.com\\/issues\\/\\d+",
+                targetElementId: "issue_description"
+            }
+        ],
+        blackListValidatorDictionary: []
+    });
+
+    const config = configHelper.getConfig(CONFIG_NAMESPACE);
+    const stopWordsDictionary = [
+        "fuck", "page", "crypto", "encryption"
+    ].push(...config.blackListValidatorDictionary);
+    const matcher = config.targetElementMatchers.find(el =>
+        new RegExp(el.urlPattern).test(window.location.href)
+    );
+    const targetElementId = matcher.targetElementId;
 
     const VALIDATORS = {
         introductionValidator: function (line) {
-            let introductions = ["- Development of the functionality ", "- Разработка функциональности "];
+            let introductions = [
+                "- Development of the functionality ",
+                "- Разработка функциональности "
+            ];
             for (let i = 0; i < introductions.length; i++) {
                 if (line.startsWith(introductions[i])) {
                     return true;
@@ -32,70 +59,91 @@
             return line.endsWith(".");
         },
         blackListValidator: function (line) {
-            let dictionary = ["fuck"];
-            for (let i = 0; i < dictionary.length; i++) {
-                if (line.includes(dictionary[i])) {
+            for (let i = 0; i < stopWordsDictionary.length; i++) {
+                if (line.includes(stopWordsDictionary[i])) {
                     return false;
                 }
             }
             return true;
         }
-    }
+    };
 
-    const validate = (text) => {
-        var lines = text.split('\n');
-        lines.forEach((line, index) => {
-            if (line.replace(/^\s*$(?:\r\n?|\n)/gm, "").length > 0) {
-                Object.keys(VALIDATORS).forEach(validator => {
-                    let result = VALIDATORS[validator](line);
-                    if (!result) {
-                        alert(`${validator} failed in line ${index + 1}`);
+    const validate = (line) => {
+        let failedValidations = [];
+        for (let validatorName in VALIDATORS) {
+            if (!VALIDATORS[validatorName](line)) {
+                failedValidations.push(validatorName);
+            }
+        }
+        return failedValidations;
+    };
+
+    const editLine = (failedValidations, line) => {
+        let listOfValidation = "";
+        for (let i = 0; i < failedValidations.length; i++) {
+            listOfValidation += "\n\t" + failedValidations[i];
+        }
+        let message = "Failed:" + listOfValidation;
+        return prompt(message, line);
+    };
+
+    const checkAndUpdateLoWText = (targetElementId) => () => {
+        const loWTextArea = document.getElementById(targetElementId);
+        const lines = loWTextArea.value.split("\n");
+
+        let lineIndex = 0;
+        for (; lineIndex < lines.length; lineIndex++) {
+            const line = lines[lineIndex];
+
+            if (line && line.trim().length) {
+                const failedValidations = validate(line);
+
+                if (failedValidations.length) {
+                    let editedLine = editLine(failedValidations, line);
+                    if (editedLine) {
+                        loWTextArea.value = loWTextArea.value.replaceAll(
+                            line,
+                            editedLine
+                        );
+                    } else {
+                        break;
                     }
-                });
+                }
             }
-        })
-    }
+        }
 
-    const extractAndValidate = (targetElementId) => () => {
-        validate(document.getElementById(targetElementId).value);
-    }
+        if (lineIndex < lines.length) {
+            const line = lines[lineIndex];
+            loWTextArea.setSelectionRange(loWTextArea.value.indexOf(line), loWTextArea.value.indexOf(line) + line.length);
+            loWTextArea.focus();
 
-    const CONFIG_NAMESPACE = "low-checker";
-    const DEFAULT_CONFIG = JSON.stringify({
-        targetElementMatchers: [
-            {
-                urlPattern: "http:\\/\\/localhost:",
-                targetElementId: "text"
-            },
-            {
-                urlPattern: "^https:\\/\\/.+\\.phoebius.com\\/issues\\/\\d+",
-                targetElementId: "issue_description"
-            }
-        ],
-        blackListValidatorDictionary: []
-    });
+            alert(`LoW checking is cancelled.`);
+        } else {
+            alert(`LoW checking is completed.`);
+        }
+    };
 
     configHelper.addConfigMenu(CONFIG_NAMESPACE, DEFAULT_CONFIG);
-    const config = configHelper.getConfig(CONFIG_NAMESPACE);
-    const matcher = config.targetElementMatchers.find((el) => new RegExp(el.urlPattern).test(window.location.href));
-    const targetElementId = matcher.targetElementId;
 
     if (matcher) {
-        document.addEventListener('keydown', function(event) {
-            //GM_log("Ctrl: " + event.ctrlKey +"; Shift: " + event.shiftKey + "; Key: " + event.key + "; Code: " + event.code);
+        document.addEventListener(
+            "keydown",
+            function (event) {
+                // GM_log("Ctrl: " + event.ctrlKey +"; Shift: " + event.shiftKey + "; Key: " + event.key + "; Code: " + event.code);
 
-            if ( event.altKey && event.shiftKey && event.code == 'KeyC') {
-                extractAndValidate(targetElementId)();
-                event.stopPropagation();
-                event.preventDefault();
-            }
-        }, true);
+                if (event.altKey && event.shiftKey && event.code == "KeyC") {
+                    checkAndUpdateLoWText(targetElementId)();
+                    event.stopPropagation();
+                    event.preventDefault();
+                }
+            },
+            true
+        );
 
         GM_log("Shortcuts assigned");
 
-        GM_registerMenuCommand("Check List of Works", extractAndValidate(targetElementId), 'c');
+        GM_registerMenuCommand("Check List of Works", checkAndUpdateLoWText(targetElementId), "c");
     } else {
         GM_log("LoW Checker: Configuration not found.");
     }
-
 })();
