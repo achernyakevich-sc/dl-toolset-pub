@@ -15,7 +15,7 @@
 // @require      https://bitbucket.org/achernyakevich/tmsp-common/raw/configHelper-0.1.3/configHelper.js
 // ==/UserScript==
 
-(function () {
+(function() {
     "use strict";
 
     const CONFIG_NAMESPACE = "low-checker";
@@ -44,39 +44,45 @@
     const targetElementId = matcher.targetElementId;
 
     const VALIDATORS = {
-        introductionValidator: function (line) {
+        introductionValidator: function(line) {
             let introductions = [
                 "- Development of the functionality ",
                 "- Разработка функциональности "
             ];
+            let hasRightIntroduction = false;
             for (let i = 0; i < introductions.length; i++) {
                 if (line.startsWith(introductions[i])) {
-                    return true;
+                    hasRightIntroduction = true;
                 }
             }
-            return false;
+            return hasRightIntroduction
+                ? ""
+                : "Line doesn't have right introduction.";
         },
-        endsWithValidator: function (line) {
-            return line.endsWith(".");
+        endsWithValidator: function(line) {
+            return line.endsWith(".") ? "" : "Line doesn't end with dot.";
         },
-        blackListValidator: function (line) {
+        blackListValidator: function(line) {
+            let stopWordsFounded = [];
             for (let i = 0; i < stopWordsDictionary.length; i++) {
                 if (line.includes(stopWordsDictionary[i])) {
-                    return false;
+                    stopWordsFounded.push(stopWordsDictionary[i]);
                 }
             }
-            return true;
+            return stopWordsFounded.length
+                ? "Line contains " + stopWordsFounded.join(", ") + "."
+                : "";
         }
     };
 
-    const validate = (line) => {
-        let failedValidations = [];
+    const validate = line => {
+        let failedValidationsMessages = [];
         for (let validatorName in VALIDATORS) {
-            if (!VALIDATORS[validatorName](line)) {
-                failedValidations.push(validatorName);
+            if (VALIDATORS[validatorName](line)) {
+                failedValidationsMessages.push(VALIDATORS[validatorName](line));
             }
         }
-        return failedValidations;
+        return failedValidationsMessages;
     };
 
     const editLine = (failedValidations, line) => {
@@ -88,7 +94,7 @@
         return prompt(message, line);
     };
 
-    const checkAndUpdateLoWText = (targetElementId) => () => {
+    const checkAndUpdateLoWText = targetElementId => () => {
         const loWTextArea = document.getElementById(targetElementId);
         const lines = loWTextArea.value.split("\n");
 
@@ -127,7 +133,7 @@
     if (matcher) {
         document.addEventListener(
             "keydown",
-            function (event) {
+            function(event) {
                 // GM_log("Ctrl: " + event.ctrlKey +"; Shift: " + event.shiftKey + "; Key: " + event.key + "; Code: " + event.code);
 
                 if (event.altKey && event.shiftKey && event.code == "KeyC") {
