@@ -33,10 +33,11 @@
         blackListValidatorDictionary: []
     });
 
+    configHelper.addConfigMenu(CONFIG_NAMESPACE, DEFAULT_CONFIG);
+
     const config = configHelper.getConfig(CONFIG_NAMESPACE);
-    const stopWordsDictionary = [
-        "fuck", "page", "crypto", "encryption"
-    ].push(...config.blackListValidatorDictionary);
+    const stopWordsDictionary = ["fuck", "page", "crypto", "encryption"];
+    stopWordsDictionary.push(...config.blackListValidatorDictionary);
     const matcher = config.targetElementMatchers.find(el =>
         new RegExp(el.urlPattern).test(window.location.href)
     );
@@ -122,8 +123,6 @@
             alert(`LoW checking is completed.`);
         }
     };
-
-    configHelper.addConfigMenu(CONFIG_NAMESPACE, DEFAULT_CONFIG);
 
     if (matcher) {
         document.addEventListener(
