@@ -52,37 +52,30 @@
             let index = 0
             for (; index < introductions.length; index++) {
                 if (line.startsWith(introductions[index])) {
-                    break;
+                    return "";
                 }
             }
-            return index === introductions.length
-                ? "Line doesn't have right introductions: \n\t\t"+introductions.join("\n\t\t")
-                : "";
+            return "Line doesn't have right introductions: \n\t\t"+introductions.join("\n\t\t");
         },
         endsWithValidator: function (line) {
             return line.endsWith(".") ? "" : "Line doesn't end with dot.";
         },
         blackListValidator: function (line) {
-            let stopWordsFounded = [];
-            for (let i = 0; i < stopWordsDictionary.length; i++) {
-                if (line.includes(stopWordsDictionary[i])) {
-                    stopWordsFounded.push(stopWordsDictionary[i]);
-                }
-            }
+            let stopWordsFounded = stopWordsDictionary.filter((word) => line.includes(word));
             return stopWordsFounded.length
-                ? "Line contains " + stopWordsFounded.join(", ") + "."
+                ? `Line contains ${stopWordsFounded.join(", ")}.`
                 : "";
         }
     };
 
     const validate = (line) => {
-        let failedValidationsMessages = [];
+        let failedValidationMessages = [];
         for (let validatorName in VALIDATORS) {
             if (VALIDATORS[validatorName](line)) {
-                failedValidationsMessages.push(VALIDATORS[validatorName](line));
+                failedValidationMessages.push(VALIDATORS[validatorName](line));
             }
         }
-        return failedValidationsMessages;
+        return failedValidationMessages;
     };
 
     const editLine = (failedValidations, line) => {
