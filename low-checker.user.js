@@ -44,20 +44,20 @@
     const targetElementId = matcher.targetElementId;
 
     const VALIDATORS = {
-        introductionValidator: function (line) {
+        startWithValidator: function (line) {
             let introductions = [
                 "- Development of the functionality ",
                 "- Разработка функциональности "
             ];
-            let hasRightIntroduction = false;
-            for (let i = 0; i < introductions.length; i++) {
-                if (line.startsWith(introductions[i])) {
-                    hasRightIntroduction = true;
+            let index = 0
+            for (; index < introductions.length; index++) {
+                if (line.startsWith(introductions[index])) {
+                    break;
                 }
             }
-            return hasRightIntroduction
-                ? ""
-                : "Line doesn't have right introduction.";
+            return index === introductions.length
+                ? "Line doesn't have right introductions: \n\t\t"+introductions.join("\n\t\t")
+                : "";
         },
         endsWithValidator: function (line) {
             return line.endsWith(".") ? "" : "Line doesn't end with dot.";
@@ -152,3 +152,4 @@
         GM_log("LoW Checker: Configuration not found.");
     }
 })();
+
