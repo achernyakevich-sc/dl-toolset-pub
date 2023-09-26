@@ -60,9 +60,9 @@
             return line.endsWith(".") ? "" : "Line should end with a period sign.";
         },
         blackListValidator: function (line) {
-            let stopWordsFounded = stopWordsDictionary.filter((word) => line.includes(word));
-            return stopWordsFounded.length
-                ? `Line should not contain the following words: ${stopWordsFounded.join(", ")}.`
+            let stopWordsDetected = stopWordsDictionary.filter((word) => line.includes(word));
+            return stopWordsDetected.length
+                ? `Line should not contain the following words: ${stopWordsDetected.join(", ")}.`
                 : "";
         }
     };
