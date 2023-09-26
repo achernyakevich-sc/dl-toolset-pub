@@ -44,39 +44,37 @@
     const targetElementId = matcher.targetElementId;
 
     const VALIDATORS = {
-        introductionValidator: function (line) {
+        startWithValidator: function (line) {
             let introductions = [
                 "- Development of the functionality ",
                 "- Разработка функциональности "
             ];
             for (let i = 0; i < introductions.length; i++) {
                 if (line.startsWith(introductions[i])) {
-                    return true;
+                    return "";
                 }
             }
-            return false;
+            return "Line should start one of the following sentences: \n\t\t"+introductions.join("\n\t\t");
         },
         endsWithValidator: function (line) {
-            return line.endsWith(".");
+            return line.endsWith(".") ? "" : "Line should end with a period sign.";
         },
         blackListValidator: function (line) {
-            for (let i = 0; i < stopWordsDictionary.length; i++) {
-                if (line.includes(stopWordsDictionary[i])) {
-                    return false;
-                }
-            }
-            return true;
+            let stopWordsDetected = stopWordsDictionary.filter((word) => line.includes(word));
+            return stopWordsDetected.length
+                ? `Line should not contain the following words: ${stopWordsDetected.join(", ")}.`
+                : "";
         }
     };
 
     const validate = (line) => {
-        let failedValidations = [];
+        let validationMessages = [];
         for (let validatorName in VALIDATORS) {
-            if (!VALIDATORS[validatorName](line)) {
-                failedValidations.push(validatorName);
+            if (VALIDATORS[validatorName](line)) {
+                validationMessages.push(VALIDATORS[validatorName](line));
             }
         }
-        return failedValidations;
+        return validationMessages;
     };
 
     const editLine = (failedValidations, line) => {
@@ -146,3 +144,4 @@
         GM_log("LoW Checker: Configuration not found.");
     }
 })();
+
