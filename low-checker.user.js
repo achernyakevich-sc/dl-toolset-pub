@@ -23,7 +23,7 @@
     const DEFAULT_CONFIG = JSON.stringify({
         targetElementMatchers: [
             {
-                urlPattern: "http:\\/\\/localhost:",
+                urlPattern: "^http://localhost:",
                 targetElementId: "text"
             },
             {
@@ -31,7 +31,7 @@
                 targetElementId: "issue_description"
             },
             {
-                urlPattern: "https://achernyakevich-sc.github.io/dl-toolset-pub/",
+                urlPattern: "^https://achernyakevich-sc.github.io/dl-toolset-pub/",
                 targetElementId: "low-textarea"
             }
         ],
