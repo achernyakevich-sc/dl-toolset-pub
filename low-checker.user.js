@@ -1,11 +1,11 @@
 // ==UserScript==
 // @name         LoW-Checker
-// @version      0.2.1
+// @version      0.3-SNAPSHOT
 // @description  List of Work (LoW) Checker
 // @author       calina@scand.com
 // @author       bosak@scand.com
+// @match        https://achernyakevich-sc.github.io/dl-toolset-pub/
 // @include      /^https:\/\/.+\.ph.+us\.com\/issues\/\d+/
-// @match        http://localhost:8080/*
 // @grant        GM_log
 // @grant        GM_setValue
 // @grant        GM_getValue
@@ -22,8 +22,8 @@
     const DEFAULT_CONFIG = JSON.stringify({
         targetElementMatchers: [
             {
-                urlPattern: "http:\\/\\/localhost:",
-                targetElementId: "text"
+                urlPattern: "^https://achernyakevich-sc.github.io/dl-toolset-pub/",
+                targetElementId: "low-textarea"
             },
             {
                 urlPattern: "^https:\\/\\/.+\\.ph.+us\\.com\\/issues\\/\\d+",
@@ -44,39 +44,37 @@
     const targetElementId = matcher.targetElementId;
 
     const VALIDATORS = {
-        introductionValidator: function (line) {
+        startWithValidator: function (line) {
             let introductions = [
                 "- Development of the functionality ",
                 "- Разработка функциональности "
             ];
             for (let i = 0; i < introductions.length; i++) {
                 if (line.startsWith(introductions[i])) {
-                    return true;
+                    return "";
                 }
             }
-            return false;
+            return "Line should start one of the following sentences: \n\t\t"+introductions.join("\n\t\t");
         },
         endsWithValidator: function (line) {
-            return line.endsWith(".");
+            return line.endsWith(".") ? "" : "Line should end with a period sign.";
         },
         blackListValidator: function (line) {
-            for (let i = 0; i < stopWordsDictionary.length; i++) {
-                if (line.includes(stopWordsDictionary[i])) {
-                    return false;
-                }
-            }
-            return true;
+            let stopWordsDetected = stopWordsDictionary.filter((word) => line.includes(word));
+            return stopWordsDetected.length
+                ? `Line should not contain the following words: ${stopWordsDetected.join(", ")}.`
+                : "";
         }
     };
 
     const validate = (line) => {
-        let failedValidations = [];
+        let validationMessages = [];
         for (let validatorName in VALIDATORS) {
-            if (!VALIDATORS[validatorName](line)) {
-                failedValidations.push(validatorName);
+            if (VALIDATORS[validatorName](line)) {
+                validationMessages.push(VALIDATORS[validatorName](line));
             }
         }
-        return failedValidations;
+        return validationMessages;
     };
 
     const editLine = (failedValidations, line) => {
@@ -146,3 +144,4 @@
         GM_log("LoW Checker: Configuration not found.");
     }
 })();
+
