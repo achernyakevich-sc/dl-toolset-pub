@@ -4,9 +4,8 @@
 // @description  List of Work (LoW) Checker
 // @author       calina@scand.com
 // @author       bosak@scand.com
-// @include      /^https:\/\/.+\.ph.+us\.com\/issues\/\d+/
 // @match        https://achernyakevich-sc.github.io/dl-toolset-pub/
-// @match        http://localhost:8080/*
+// @include      /^https:\/\/.+\.ph.+us\.com\/issues\/\d+/
 // @grant        GM_log
 // @grant        GM_setValue
 // @grant        GM_getValue
@@ -23,16 +22,12 @@
     const DEFAULT_CONFIG = JSON.stringify({
         targetElementMatchers: [
             {
-                urlPattern: "^http://localhost:",
-                targetElementId: "text"
+                urlPattern: "^https://achernyakevich-sc.github.io/dl-toolset-pub/",
+                targetElementId: "low-textarea"
             },
             {
                 urlPattern: "^https:\\/\\/.+\\.ph.+us\\.com\\/issues\\/\\d+",
                 targetElementId: "issue_description"
-            },
-            {
-                urlPattern: "^https://achernyakevich-sc.github.io/dl-toolset-pub/",
-                targetElementId: "low-textarea"
             }
         ],
         blackListValidatorDictionary: []
