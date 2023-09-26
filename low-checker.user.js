@@ -49,33 +49,32 @@
                 "- Development of the functionality ",
                 "- Разработка функциональности "
             ];
-            let index = 0
-            for (; index < introductions.length; index++) {
-                if (line.startsWith(introductions[index])) {
+            for (let i = 0; i < introductions.length; i++) {
+                if (line.startsWith(introductions[i])) {
                     return "";
                 }
             }
-            return "Line doesn't have right introductions: \n\t\t"+introductions.join("\n\t\t");
+            return "Line should start one of the following sentences: \n\t\t"+introductions.join("\n\t\t");
         },
         endsWithValidator: function (line) {
-            return line.endsWith(".") ? "" : "Line doesn't end with dot.";
+            return line.endsWith(".") ? "" : "Line should end with a period sign.";
         },
         blackListValidator: function (line) {
             let stopWordsFounded = stopWordsDictionary.filter((word) => line.includes(word));
             return stopWordsFounded.length
-                ? `Line contains ${stopWordsFounded.join(", ")}.`
+                ? `Line should not contain the following words: ${stopWordsFounded.join(", ")}.`
                 : "";
         }
     };
 
     const validate = (line) => {
-        let failedValidationMessages = [];
+        let validationMessages = [];
         for (let validatorName in VALIDATORS) {
             if (VALIDATORS[validatorName](line)) {
-                failedValidationMessages.push(VALIDATORS[validatorName](line));
+                validationMessages.push(VALIDATORS[validatorName](line));
             }
         }
-        return failedValidationMessages;
+        return validationMessages;
     };
 
     const editLine = (failedValidations, line) => {
