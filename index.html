@@ -15,7 +15,11 @@
     <div>
       <button
         type="button"
-        onclick="document.dispatchEvent(new KeyboardEvent('keydown',{'code':'KeyC', 'shiftKey': true, 'altKey': true}));"
+        onclick="if (document.LoWCheckerEnabled) {
+          document.dispatchEvent(new KeyboardEvent('keydown',{'code':'KeyC', 'shiftKey': true, 'altKey': true}));
+        } else {
+          alert('Please, Install Tampermonkey Firefox add-on and LoW-checker Tampermonkey script.')
+        }"
       >
         Check
       </button>
