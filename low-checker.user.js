@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         LoW-Checker
-// @version      0.4-SNAPSHOT
+// @version      0.4
 // @description  List of Work (LoW) Checker
 // @author       calina@scand.com
 // @author       bosak@scand.com
