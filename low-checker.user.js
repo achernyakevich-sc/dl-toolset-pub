@@ -143,5 +143,6 @@
     } else {
         GM_log("LoW Checker: Configuration not found.");
     }
-})();
 
+    document.LoWCheckerEnabled = true; 
+})();
