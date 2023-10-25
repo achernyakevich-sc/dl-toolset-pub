@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         LoW-Checker
-// @version      0.4
+// @version      0.5-SNAPSHOT
 // @description  List of Work (LoW) Checker
 // @author       calina@scand.com
 // @author       bosak@scand.com
@@ -144,5 +144,5 @@
         GM_log("LoW Checker: Configuration not found.");
     }
 
-    document.LoWCheckerEnabled = true; 
+    document.LoWCheckerEnabled = true;
 })();
