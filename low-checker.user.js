@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         LoW-Checker
-// @version      0.5-SNAPSHOT
+// @version      0.4.1-SNAPSHOT
 // @description  List of Work (LoW) Checker
 // @author       calina@scand.com
 // @author       bosak@scand.com
@@ -36,7 +36,11 @@
     configHelper.addConfigMenu(CONFIG_NAMESPACE, DEFAULT_CONFIG);
 
     const config = configHelper.getConfig(CONFIG_NAMESPACE);
-    const stopWordsDictionary = ["fuck", "page", "crypto", "encryption"];
+    const stopWordsDictionary = [
+        "page", "страниц",
+        "crypto", "крипто",
+        "encryption", "шифрован"
+    ];
     stopWordsDictionary.push(...config.blackListValidatorDictionary);
     const matcher = config.targetElementMatchers.find(el =>
         new RegExp(el.urlPattern).test(window.location.href)
