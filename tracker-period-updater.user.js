@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         TrackerPeriodUpdater
-// @namespace    https://bitbucket.org/achernyakevich/tampermonkey-scripts/
+// @namespace    https://github.com/achernyakevich-sc/dl-toolset-pub/
 // @version      0.1.0
 // @description  This script brings possibility to move forward period of the tracker.
 // @author       Alexander Chernyakevich <tch@scand.com>
