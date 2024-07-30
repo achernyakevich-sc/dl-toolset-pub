@@ -14,8 +14,14 @@
     'use strict';
 
     const updatePeriod = () => {
-        let periodInput = document.getElementById("issue_custom_field_values_18");
         let subjectInput = document.getElementById("issue_subject");
+        let descriptionTextarea = document.getElementById("issue_description");
+        let statusSelect = document.getElementById("issue_status_id");
+        let assigneeSelect = document.getElementById("issue_assigned_to_id");
+        let periodInput = document.getElementById("issue_custom_field_values_18");
+        let linkIssueCheckbox = document.getElementById("link_copy");
+        let copyAttachmentsCheckbox = document.getElementById("copy_attachments");
+
         let oldPeriod = parseInt(periodInput.value);
         let year = Math.floor(oldPeriod / 100);
         let month = (oldPeriod % 100) + 1;
@@ -26,6 +32,13 @@
         let newPeriod = "" + year + ( month < 10 ? "0" : "" ) + month;
         periodInput.value = newPeriod;
         subjectInput.value = subjectInput.value.replace(oldPeriod, newPeriod)
+
+        descriptionTextarea.value = "";
+        linkIssueCheckbox.checked = false;
+        copyAttachmentsCheckbox.checked = false;
+        assigneeSelect.selectedIndex = 1;
+        statusSelect.selectedIndex = 0;
+
         GM_log("Update called");
     }
 
