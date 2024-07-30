@@ -4,8 +4,8 @@
 // @version      0.1.0
 // @description  This script brings possibility to move forward period of the tracker.
 // @author       Alexander Chernyakevich <tch@scand.com>
-// @include      /^https:\/\/.+\.ph.+us\.com\/issues\/\d+/
-// @match        https://reports.phoebius.com/*/issues/*/copy
+// @include      /^https:\/\/.+\.phoebius\.com\/issues\/\d+/
+// @match        https://*.phoebius.com/*/issues/*/copy
 // @grant        GM_log
 // @grant        GM_registerMenuCommand
 // ==/UserScript==
@@ -34,8 +34,12 @@
         subjectInput.value = subjectInput.value.replace(oldPeriod, newPeriod)
 
         descriptionTextarea.value = "";
-        linkIssueCheckbox.checked = false;
-        copyAttachmentsCheckbox.checked = false;
+        if ( linkIssueCheckbox ) {
+            linkIssueCheckbox.checked = false;
+        }
+        if ( copyAttachmentsCheckbox ) {
+            copyAttachmentsCheckbox.checked = false;
+        }
         assigneeSelect.selectedIndex = 1;
         statusSelect.selectedIndex = 0;
 
