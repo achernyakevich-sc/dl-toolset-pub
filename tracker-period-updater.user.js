@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         TrackerPeriodUpdater
 // @namespace    https://github.com/achernyakevich-sc/dl-toolset-pub/
-// @version      0.1.1
+// @version      0.1.2
 // @description  This script brings possibility to move forward period of the tracker.
 // @author       Alexander Chernyakevich <tch@scand.com>
 // @include      /^https:\/\/.+\.ph.+us\.com\/(.+\/)*issues\/\d+(\/copy)*/
@@ -36,7 +36,7 @@
             document.getElementById("issue_custom_field_values_5").value = ""; // Report field
             document.getElementById("issue_custom_field_values_8").value = ""; // Issuing Date field
             document.getElementById("issue_custom_field_values_7").value = ""; // Payment Date field
-            document.getElementById("issue_custom_field_values_17").selectedIndex = 2; // Recorded field
+            document.getElementById("issue_custom_field_values_17").selectedIndex = 0; // Recorded field
 
             let numberInput = document.getElementById("issue_custom_field_values_6");
             numberInput.value = ( numberInput.value.trim() != "" ? parseInt(numberInput.value) + 1 : "" );
