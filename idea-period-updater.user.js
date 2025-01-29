@@ -1,10 +1,10 @@
 // ==UserScript==
-// @name         TrackerPeriodUpdater
+// @name         IdeaPeriodUpdater
 // @namespace    https://github.com/achernyakevich-sc/dl-toolset-pub/
-// @version      0.1.2
-// @description  This script brings possibility to move forward period of the tracker.
+// @version      0.1.0
+// @description  This script brings possibility to move forward period of the Idea tracker.
 // @author       Alexander Chernyakevich <tch@scand.com>
-// @include      /^https:\/\/.+\.ph.+us\.com\/(.+\/)*issues\/\d+(\/copy)*/
+// @include      /^https:\/\/mdt\..+/issues\/\d+/
 // @grant        GM_log
 // @grant        GM_registerMenuCommand
 // ==/UserScript==
@@ -17,32 +17,24 @@
         let descriptionTextarea = document.getElementById("issue_description");
         let statusSelect = document.getElementById("issue_status_id");
         let assigneeSelect = document.getElementById("issue_assigned_to_id");
-        let periodInput = document.getElementById(periodInputId);
+        let startDateInput = document.getElementById("issue_start_date");
+        let dueDateInput = document.getElementById("issue_due_date");
         let linkIssueCheckbox = document.getElementById("link_copy");
         let copyAttachmentsCheckbox = document.getElementById("copy_attachments");
 
-        let oldPeriod = parseInt(periodInput.value);
-        let year = Math.floor(oldPeriod / 100);
-        let month = (oldPeriod % 100) + 1;
+        let oldPeriod = subjectInput.value.substr(0, 7);
+        let year = parseInt(subjectInput.value.substr(0, 4));
+        let month = parseInt(subjectInput.value.substr(5, 2)) + 1;
         if ( month > 12 ) {
             year++;
             month = month - 12;
         }
-        let newPeriod = "" + year + ( month < 10 ? "0" : "" ) + month;
-        periodInput.value = newPeriod;
+        let newPeriod = "" + year + "-" + ( month < 10 ? "0" : "" ) + month;
         subjectInput.value = subjectInput.value.replace(oldPeriod, newPeriod)
 
-        if ( !isReportsHost ) {
-            document.getElementById("issue_custom_field_values_5").value = ""; // Report field
-            document.getElementById("issue_custom_field_values_8").value = ""; // Issuing Date field
-            document.getElementById("issue_custom_field_values_7").value = ""; // Payment Date field
-            document.getElementById("issue_custom_field_values_17").selectedIndex = 0; // Recorded field
-
-            let numberInput = document.getElementById("issue_custom_field_values_6");
-            numberInput.value = ( numberInput.value.trim() != "" ? parseInt(numberInput.value) + 1 : "" );
-        }
-
         descriptionTextarea.value = "";
+        startDateInput.value = newPeriod + "-01";
+        dueDateInput.value = newPeriod + "-25";
         if ( linkIssueCheckbox ) {
             linkIssueCheckbox.checked = false;
         }
@@ -55,10 +47,10 @@
         GM_log("Form updated.");
     }
 
-    let isReportsHost = ( document.location.hostname.indexOf("reports") == 0 );
-    let periodInputId = ( isReportsHost ? "issue_custom_field_values_18" : "issue_custom_field_values_4" );
-
-    document.addEventListener("keydown", (event) => {
+    let trackerSelect = document.getElementById("issue_tracker_id");
+    let trackerTitle = trackerSelect.options[trackerSelect.selectedIndex].text;
+    if (trackerTitle == "Idea") {
+        document.addEventListener("keydown", (event) => {
             // GM_log("Ctrl: " + event.ctrlKey +"; Shift: " + event.shiftKey + "; Key: " + event.key + "; Code: " + event.code);
 
             if (event.altKey && event.shiftKey && event.code == "KeyP") {
@@ -68,7 +60,8 @@
             }
         }, true);
 
-    GM_log("TrackerPeriodUpdater: shortcuts assigned");
+        GM_log("MDT-IdeaPeriodUpdater: shortcuts assigned");
 
-    GM_registerMenuCommand("Updated period", updateForm, "p");
+        GM_registerMenuCommand("Updated period", updateForm, "p");
+    }
 })();
