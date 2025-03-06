@@ -69,7 +69,7 @@
                 ? `Line should not contain the following words: ${stopWordsDetected.join(", ")}.`
                 : "";
         },
-        notOneSentenceValidator: function (line) {
+        oneSentencePerLineValidator: function (line) {
             const parts = line.split('.');
             return parts.length > 2 ? "Suspected: more than one sentence in one line." : "";
         }
