@@ -68,6 +68,13 @@
             return stopWordsDetected.length
                 ? `Line should not contain the following words: ${stopWordsDetected.join(", ")}.`
                 : "";
+        },
+        notOneSentenceValidator: function (line) {
+            const parts = line.split('.');
+            if (parts.length > 2) {
+                return "Suspected: more than one sentence in one line.";
+            }
+            return "";
         }
     };
 
