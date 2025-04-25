@@ -26,6 +26,18 @@
       <small>or press Alt+Shift+C to check.</small>
     </div>
     <br/>
+    <div>
+      <button type="button" onclick="document.getElementById('low-textarea').value = ''">
+        Clear
+      </button>
+      <button
+        type="button"
+        onclick="navigator.clipboard.writeText(document.getElementById('low-textarea').value); alert('LoW copied to clipboard!');"
+      >
+        Copy
+      </button>
+    </div>
+    <br/>
     <br/>
     <a href="https://addons.mozilla.org/en-US/firefox/addon/tampermonkey/"
       target="_blank">Install Tampermonkey Firefox add-on.</a>
