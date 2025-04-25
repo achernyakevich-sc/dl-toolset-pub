@@ -27,14 +27,14 @@
     </div>
     <br/>
     <div>
-      <button type="button" onclick="document.getElementById('low-textarea').value = ''">
-        Clear
-      </button>
       <button
         type="button"
         onclick="navigator.clipboard.writeText(document.getElementById('low-textarea').value); alert('LoW copied to clipboard!');"
       >
         Copy
+      </button>
+      <button type="button" onclick="document.getElementById('low-textarea').value = ''">
+        Clear
       </button>
     </div>
     <br/>
