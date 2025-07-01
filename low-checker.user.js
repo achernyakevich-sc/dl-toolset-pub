@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         LoW-Checker
-// @version      0.5.0
+// @version      0.5.1
 // @description  List of Work (LoW) Checker
 // @author       calina@scand.com
 // @author       bosak@scand.com
@@ -37,9 +37,10 @@
 
     const config = configHelper.getConfig(CONFIG_NAMESPACE);
     const stopWordsDictionary = [
-        "page", "страниц",
         "crypto", "крипто",
-        "encryption", "шифрован"
+        "daemon", "демон",
+        "encryption", "шифрован",
+        "page", "страниц"
     ];
     stopWordsDictionary.push(...config.blackListValidatorDictionary);
     const matcher = config.targetElementMatchers.find(el =>
