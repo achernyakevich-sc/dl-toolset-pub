@@ -37,9 +37,10 @@
 
     const config = configHelper.getConfig(CONFIG_NAMESPACE);
     const stopWordsDictionary = [
-        "page", "страниц",
         "crypto", "крипто",
-        "encryption", "шифрован"
+        "daemon", "демон",
+        "encryption", "шифрован",
+        "page", "страниц"
     ];
     stopWordsDictionary.push(...config.blackListValidatorDictionary);
     const matcher = config.targetElementMatchers.find(el =>
