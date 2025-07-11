@@ -79,11 +79,9 @@
         nonAsciiValidator: function (line) {
             const nonAsciiSymbols = line.match(nonAsciiRegexp);
             const numSymbols = nonAsciiSymbols?.length;
-            if (numSymbols) {
-                const symbolsToShow = numSymbols > 5 ? [...nonAsciiSymbols.slice(0, 5), 'etc.'] : nonAsciiSymbols;
-                return `${numSymbols} incorrect symbols were detected: ${symbolsToShow.join(" ")}`;
-            }
-            return "";
+            return numSymbols
+                ? `${numSymbols} incorrect symbols were detected: ${nonAsciiSymbols.slice(0, 5).join(", ")}${numSymbols > 5 ? ", etc." : "." }`
+                : "";
         }
     };
 
