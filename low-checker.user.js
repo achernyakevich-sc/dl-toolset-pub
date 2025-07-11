@@ -42,6 +42,7 @@
         "page", "страниц"
     ];
     stopWordsDictionary.push(...config.blackListValidatorDictionary);
+    const nonAsciiRegExp = /[^\x00-\x7F\u0400-\u04FF]/g;
     const matcher = config.targetElementMatchers.find(el =>
         new RegExp(el.urlPattern).test(window.location.href)
     );
@@ -72,6 +73,13 @@
         oneSentencePerLineValidator: function (line) {
             const parts = line.split('.');
             return parts.length > 2 ? "Suspected: more than one sentence in one line." : "";
+        },
+        nonAsciiValidator: function (line) {
+            const nonAsciiSymbols = line.match(nonAsciiRegExp);
+            const numSymbols = nonAsciiSymbols?.length;
+            return numSymbols
+                ? `${numSymbols} incorrect symbols were detected: ${nonAsciiSymbols.slice(0, 5).join(", ")}${numSymbols > 5 ? ", etc." : "." }`
+                : "";
         }
     };
 
