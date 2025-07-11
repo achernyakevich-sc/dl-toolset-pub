@@ -37,9 +37,8 @@
 
     const config = configHelper.getConfig(CONFIG_NAMESPACE);
     const stopWordsDictionary = [
-        "crypto", "крипто",
+        "crypto", "crypti", "crypte", "крипто", "шифрован",
         "daemon", "демон",
-        "encryption", "шифрован",
         "page", "страниц"
     ];
     stopWordsDictionary.push(...config.blackListValidatorDictionary);
