@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         LoW-Checker
-// @version      0.5.1
+// @version      0.6.0
 // @description  List of Work (LoW) Checker
 // @author       calina@scand.com
 // @author       bosak@scand.com
@@ -37,13 +37,12 @@
 
     const config = configHelper.getConfig(CONFIG_NAMESPACE);
     const stopWordsDictionary = [
-        "crypt", "крипто", "шифрован",
+        "crypto", "crypti", "crypte", "крипто", "шифрован",
         "daemon", "демон",
         "page", "страниц"
     ];
     stopWordsDictionary.push(...config.blackListValidatorDictionary);
-    // regexp allows all standard ASCII characters and Unicode Cyrillic characters
-    const nonAsciiRegexp = /[^\x00-\x7F\u0400-\u04FF]/g;
+    const nonAsciiRegExp = /[^\x00-\x7F\u0400-\u04FF]/g;
     const matcher = config.targetElementMatchers.find(el =>
         new RegExp(el.urlPattern).test(window.location.href)
     );
@@ -76,7 +75,7 @@
             return parts.length > 2 ? "Suspected: more than one sentence in one line." : "";
         },
         nonAsciiValidator: function (line) {
-            const nonAsciiSymbols = line.match(nonAsciiRegexp);
+            const nonAsciiSymbols = line.match(nonAsciiRegExp);
             const numSymbols = nonAsciiSymbols?.length;
             return numSymbols
                 ? `${numSymbols} incorrect symbols were detected: ${nonAsciiSymbols.slice(0, 5).join(", ")}${numSymbols > 5 ? ", etc." : "." }`
