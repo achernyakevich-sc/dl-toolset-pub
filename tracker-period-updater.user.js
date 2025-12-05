@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         TrackerPeriodUpdater
 // @namespace    https://github.com/achernyakevich-sc/dl-toolset-pub/
-// @version      0.1.2
+// @version      0.1.3
 // @description  This script brings possibility to move forward period of the tracker.
 // @author       Alexander Chernyakevich <tch@scand.com>
 // @include      /^https:\/\/.+\.ph.+us\.com\/(.+\/)*issues\/\d+(\/copy)*/
@@ -61,8 +61,10 @@
     document.addEventListener("keydown", (event) => {
             // GM_log("Ctrl: " + event.ctrlKey +"; Shift: " + event.shiftKey + "; Key: " + event.key + "; Code: " + event.code);
 
-            if (event.altKey && event.shiftKey && event.code == "KeyP") {
-                updateForm();
+            if (event.altKey && event.shiftKey && event.code == "KeyP" && !event.ctrlKey) {
+                if (document.getElementById("update").style.display != "none") {
+                    updateForm();
+                }
                 event.stopPropagation();
                 event.preventDefault();
             }
