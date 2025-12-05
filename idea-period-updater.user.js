@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         IdeaPeriodUpdater
 // @namespace    https://github.com/achernyakevich-sc/dl-toolset-pub/
-// @version      0.1.0
+// @version      0.1.1
 // @description  This script brings possibility to move forward period of the Idea tracker.
 // @author       Alexander Chernyakevich <tch@scand.com>
 // @include      /^https:\/\/mdt\..+/issues\/\d+/
@@ -53,8 +53,10 @@
         document.addEventListener("keydown", (event) => {
             // GM_log("Ctrl: " + event.ctrlKey +"; Shift: " + event.shiftKey + "; Key: " + event.key + "; Code: " + event.code);
 
-            if (event.altKey && event.shiftKey && event.code == "KeyP") {
-                updateForm();
+            if (event.altKey && event.shiftKey && event.code == "KeyP" && !event.ctrlKey) {
+                if (document.getElementById("update").style.display != "none") {
+                    updateForm();
+                }
                 event.stopPropagation();
                 event.preventDefault();
             }
