@@ -1,16 +1,28 @@
 // ==UserScript==
 // @name         TrackerPeriodUpdater
 // @namespace    https://github.com/achernyakevich-sc/dl-toolset-pub/
-// @version      0.1.5
+// @version      0.1.6
 // @description  This script brings possibility to move forward period of the tracker.
 // @author       Alexander Chernyakevich <tch@scand.com>
 // @include      /^https:\/\/.+\.ph.+us\.com\/(.+\/)*issues\/\d+(\/copy)*/
 // @grant        GM_log
+// @grant        GM_setValue
+// @grant        GM_getValue
 // @grant        GM_registerMenuCommand
 // ==/UserScript==
 
 (function() {
     'use strict';
+
+    const DEFAULT_INVOICE_DATE_KEY = "tracker.period.updater.default.invoice.date";
+
+    const setDefaultInvoiceDate = () => {
+        let defaultInvoiceDate = prompt('Enter default invoice date (YYYY-MM-DD)', GM_getValue(DEFAULT_INVOICE_DATE_KEY, ''));
+        GM_setValue(DEFAULT_INVOICE_DATE_KEY, defaultInvoiceDate);
+    }
+    const getDefaultInvoiceDate = () => {
+        return GM_getValue(DEFAULT_INVOICE_DATE_KEY, '');
+    }
 
     const updateForm = () => {
         let subjectInput = document.getElementById("issue_subject");
@@ -34,7 +46,8 @@
 
         if ( !isReportsHost ) {
             document.getElementById("issue_custom_field_values_5").value = ""; // Report field
-            document.getElementById("issue_custom_field_values_8").value = ""; // Issuing Date field
+            // Issuing Date field
+            document.getElementById("issue_custom_field_values_8").value = getDefaultInvoiceDate();
             document.getElementById("issue_custom_field_values_7").value = ""; // Payment Date field
             // Recorded field: Scand -> No | SCPL -> unselected
             document.getElementById("issue_custom_field_values_17").selectedIndex =
@@ -75,4 +88,5 @@
     GM_log("TrackerPeriodUpdater: shortcuts assigned");
 
     GM_registerMenuCommand("Updated period", updateForm, "p");
+    GM_registerMenuCommand("Set default invoice date", setDefaultInvoiceDate, "i");
 })();
