@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         LoW-Checker
-// @version      0.6.0
+// @version      0.6.1
 // @description  List of Work (LoW) Checker
 // @author       calina@scand.com
 // @author       bosak@scand.com
@@ -106,12 +106,14 @@
         const loWTextArea = document.getElementById(targetElementId);
         const lines = loWTextArea.value.split("\n");
 
+        let warningsCount = 0
         let lineIndex = 0;
         for (; lineIndex < lines.length; lineIndex++) {
             const line = lines[lineIndex];
 
             if (line && line.trim().length) {
                 const failedValidations = validate(line);
+                warningsCount += (failedValidations ? failedValidations.length : 0);
 
                 if (failedValidations.length) {
                     let editedLine = editLine(failedValidations, line);
@@ -134,7 +136,7 @@
 
             alert(`LoW checking is cancelled.`);
         } else {
-            alert(`LoW checking is completed.`);
+            alert(`LoW checking is completed.\nWarnings detected: ` + warningsCount);
         }
     };
 
